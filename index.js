@@ -3,7 +3,6 @@
  * Module dependencies.
  */
 
-var client = require('redis').createClient;
 var parser = require('socket.io-parser');
 var msgpack = require('notepack.io');
 var debug = require('debug')('socket.io-emitter');
@@ -45,21 +44,11 @@ var uid = 'emitter';
 function init(redis, opts){
   opts = opts || {};
 
-  if ('string' == typeof redis) {
-    redis = client(redis);
-  }
+
 
   if (redis && !redis.hset) {
     opts = redis;
     redis = null;
-  }
-
-  if (!redis) {
-    if (!opts.socket && !opts.host) throw new Error('Missing redis `host`');
-    if (!opts.socket && !opts.port) throw new Error('Missing redis `port`');
-    redis = opts.socket
-      ? client(opts.socket)
-      : client(opts.port, opts.host);
   }
 
   var prefix = opts.key || 'socket.io';
